@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="CACTI-0.90.0/src"/>
+	<classpathentry kind="lib" path="CACTI-0.90.0/sqlite-jdbc-3.23.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="CACTI-0.90.0/bin"/>
+</classpath>
