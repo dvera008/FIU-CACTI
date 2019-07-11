@@ -20,6 +20,7 @@ package edu.unm.casaa.main;
 
 import edu.unm.casaa.globals.GlobalCode;
 import edu.unm.casaa.misc.MiscCode;
+import edu.unm.casaa.misc.MiscCode.Speaker;
 import edu.unm.casaa.misc.MiscDataItem;
 import edu.unm.casaa.utterance.Utterance;
 import javafx.animation.Animation;
@@ -2995,8 +2996,16 @@ public class MainController {
 	public void mniModeTherapist() {
 		setSpeaker(MiscCode.Speaker.Therapist);
 	}
-	
+
 	private void setSpeaker(MiscCode.Speaker speaker) {
 		speakerState = speaker;
+		GridPane[] panes = { pnlCodesLeft, pnlCodesCenter, pnlCodesRight };
+		for (int i = 0; i < panes.length; i++) {
+			if(i != speaker.getID()) {
+				panes[i].setDisable(true);
+			}else {
+				panes[i].setDisable(false);
+			}
+		}
 	}
 }
