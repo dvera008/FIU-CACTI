@@ -240,7 +240,9 @@ public class MainController {
 		PLAYBACK, MISC_CODING, GLOBAL_CODING, REPORT
 	}
 
-	private GuiState guiState; //
+	private GuiState guiState;
+
+	private MiscCode.Speaker speakerState;
 
 	private TimeLine timeLine;
 
@@ -249,8 +251,8 @@ public class MainController {
 	/*****************************************************************
 	 * controller constructor
 	 *
-	 * called once at start. Include things here that need to run once at start
-	 * but doesn't need access to FXML. After this, initialize() is called
+	 * called once at start. Include things here that need to run once at start but
+	 * doesn't need access to FXML. After this, initialize() is called
 	 *****************************************************************/
 	public MainController() {
 
@@ -271,9 +273,9 @@ public class MainController {
 	/******************************************************************
 	 * controller initialization tasks
 	 *
-	 * Called to initialize a controller after its root element has been
-	 * completely processed. The initialize method is called after all @FXML
-	 * annotated members have been injected.
+	 * Called to initialize a controller after its root element has been completely
+	 * processed. The initialize method is called after all @FXML annotated members
+	 * have been injected.
 	 *
 	 * This is called on any FXMLLoader, NOT just when app or MainController is
 	 * first loaded.
@@ -321,12 +323,11 @@ public class MainController {
 	}
 
 	/**********************************************************************
-	 * button event: Seek to beginning of current utterance. Seek a little
-	 * further back to ensure audio synchronization issues don't cause player to
-	 * actually seek later than beginning of utterance.
+	 * button event: Seek to beginning of current utterance. Seek a little further
+	 * back to ensure audio synchronization issues don't cause player to actually
+	 * seek later than beginning of utterance.
 	 * 
-	 * @param actionEvent
-	 *            not used
+	 * @param actionEvent not used
 	 **********************************************************************/
 	@SuppressWarnings("UnusedParameters")
 	public void btnActReplay(ActionEvent actionEvent) {
@@ -334,8 +335,8 @@ public class MainController {
 	}
 
 	/**
-	 * Play utterance on mediaplayer starting one second ahead of utterance
-	 * start time
+	 * Play utterance on mediaplayer starting one second ahead of utterance start
+	 * time
 	 * 
 	 * @param mouseEvent
 	 */
@@ -373,9 +374,9 @@ public class MainController {
 	}
 
 	/**********************************************************************
-	 * button event: Uncode last utterance. If more utterances exist then move
-	 * to 1 second prior to the previous code. Otherwise, move to 1 second prior
-	 * to that last code
+	 * button event: Uncode last utterance. If more utterances exist then move to 1
+	 * second prior to the previous code. Otherwise, move to 1 second prior to that
+	 * last code
 	 *
 	 **********************************************************************/
 	public void btnActUncodeRewind() {
@@ -657,9 +658,8 @@ public class MainController {
 	}
 
 	/******************************************************
-	 * Resume Misc Coding Load coding file and corresponding audio file.
-	 * Initialize mediaplayer. Activate timeline control updating it for
-	 * utterance data
+	 * Resume Misc Coding Load coding file and corresponding audio file. Initialize
+	 * mediaplayer. Activate timeline control updating it for utterance data
 	 ******************************************************/
 	public void mniResumeCoding() {
 
@@ -945,8 +945,8 @@ public class MainController {
 	}
 
 	/**********************************************************************
-	 * sldSeek mouse event: change seek time when user clicks on slid bar
-	 * instead of dragging the controller to change the position
+	 * sldSeek mouse event: change seek time when user clicks on slid bar instead of
+	 * dragging the controller to change the position
 	 **********************************************************************/
 	public void sldSeekMousePressed() {
 		setMediaPlayerPosition(totalDuration.multiply(sldSeek.getValue()));
@@ -988,8 +988,7 @@ public class MainController {
 	/************************************************************************
 	 * Specify a Misc code file for coding
 	 * 
-	 * @param newFileName
-	 *            filename to seed filechooser
+	 * @param newFileName filename to seed filechooser
 	 * @return Misc Codes File object
 	 ************************************************************************/
 	private File selectMiscFile(String newFileName) {
@@ -1148,8 +1147,7 @@ public class MainController {
 	 * Display editor for annotating an utterance and handle update through data
 	 * model
 	 * 
-	 * @param pcEvt
-	 *            Property change event we are listening for
+	 * @param pcEvt Property change event we are listening for
 	 */
 	private void openUtteranceEditor(PropertyChangeEvent pcEvt) {
 		if (pcEvt.getNewValue() != null) {
@@ -1282,9 +1280,9 @@ public class MainController {
 
 	/**
 	 * Notify user of file format issue and ask for permission to convert. Guide
-	 * user through selecting globals file for merging into new format. Call
-	 * static SessionData methods to archive casaa and globals file to *.bak. If
-	 * this all works out, return true
+	 * user through selecting globals file for merging into new format. Call static
+	 * SessionData methods to archive casaa and globals file to *.bak. If this all
+	 * works out, return true
 	 */
 	private SessionData getSessionFilePreviousFileFormat(File sessionFile) throws IOException {
 
@@ -1470,10 +1468,8 @@ public class MainController {
 	/**********************************************************************
 	 * Initialize the media player state with media file
 	 * 
-	 * @param mediaFile
-	 *            media object used to initialize player
-	 * @param onReadyMethod
-	 *            once player is ready which runnable will be called
+	 * @param mediaFile     media object used to initialize player
+	 * @param onReadyMethod once player is ready which runnable will be called
 	 **********************************************************************/
 	private void initializeMediaPlayer(File mediaFile, Runnable onReadyMethod) {
 
@@ -2076,10 +2072,8 @@ public class MainController {
 	/*******************************************************
 	 * display runtime errors
 	 * 
-	 * @param title
-	 *            Window title
-	 * @param message
-	 *            Window message
+	 * @param title   Window title
+	 * @param message Window message
 	 *******************************************************/
 	private static void showError(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -2092,10 +2086,8 @@ public class MainController {
 	/*******************************************************
 	 * display fatal errors
 	 * 
-	 * @param title
-	 *            Window title
-	 * @param message
-	 *            Window message
+	 * @param title   Window title
+	 * @param message Window message
 	 *******************************************************/
 	public static void showFatalWarning(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -2137,8 +2129,7 @@ public class MainController {
 	/**
 	 * New utterance
 	 * 
-	 * @param miscCode
-	 *            code linked to utterance
+	 * @param miscCode code linked to utterance
 	 */
 	private synchronized void insertUtterance(MiscCode miscCode, boolean annotate) {
 
@@ -2175,21 +2166,23 @@ public class MainController {
 	 * shared method: Remove last utterance
 	 **********************************************************************/
 	private void uncode() {
-		// remove the last code
-		removeLastUtterance();
-		// uncoding may exhaust available codes so update button state
-		setPlayerButtonState();
+		if (getUtteranceList().last().getMiscCode().getSpeaker().equals(speakerState)) {
+			// remove the last code
+			removeLastUtterance();
+			// uncoding may exhaust available codes so update button state
+			setPlayerButtonState();
+		}
 	}
 
 	/**
-	 * shared method Uncode last utterance. If more utterances exist then move
-	 * to 1 second prior to the previous code. Otherwise, move to 1 second prior
-	 * to that last code
+	 * shared method Uncode last utterance. If more utterances exist then move to 1
+	 * second prior to the previous code. Otherwise, move to 1 second prior to that
+	 * last code
 	 */
 	private void uncodeRewind() {
 
 		Utterance lastUtterance = getUtteranceList().last();
-		if (lastUtterance != null) {
+		if (lastUtterance != null && lastUtterance.getMiscCode().getSpeaker().equals(speakerState)) {
 
 			// new playback position defaults to 1 second before the last code
 			// before we
@@ -2224,8 +2217,7 @@ public class MainController {
 	}
 
 	/**
-	 * @param utr
-	 *            Utterance instance to be removed
+	 * @param utr Utterance instance to be removed
 	 */
 	private synchronized void removeUtterance(Utterance utr) {
 		// System.out.println("--- Controller removeUtterance:" +
@@ -2252,13 +2244,11 @@ public class MainController {
 	}
 
 	/*********************************************************************
-	 * Handle errors re: user codes XML file. We must be able to find and parse
-	 * this file successfully, so all of these errors are fatal.
+	 * Handle errors re: user codes XML file. We must be able to find and parse this
+	 * file successfully, so all of these errors are fatal.
 	 * 
-	 * @param file
-	 *            what was being parsed
-	 * @param e
-	 *            the Error
+	 * @param file what was being parsed
+	 * @param e    the Error
 	 *********************************************************************/
 	private void handleUserCodesParseException(File file, SAXParseException e) {
 		// Alert and quit.
@@ -2276,11 +2266,10 @@ public class MainController {
 	}
 
 	/**
-	 * Parse user codes and globals from user config file into vectors of
-	 * MiscCode and GlobalCode
+	 * Parse user codes and globals from user config file into vectors of MiscCode
+	 * and GlobalCode
 	 *
-	 * <userConfiguration> <codes> contain code label and value goes into
-	 * MiscCode
+	 * <userConfiguration> <codes> contain code label and value goes into MiscCode
 	 */
 	private void parseUserConfig() {
 
@@ -2413,12 +2402,13 @@ public class MainController {
 				if (nodeMaxRating != null)
 					code.maxRating = Integer.parseInt(nodeMaxRating.getTextContent());
 
-				/*if (code.defaultRating < code.minRating || code.defaultRating > code.maxRating
-						|| code.maxRating < code.minRating) {
-					handleUserCodesError(file,
-							"Invalid range for global code: " + code.name + ", minRating: " + code.minRating
-									+ ", maxRating: " + code.maxRating + ", defaultRating: " + code.defaultRating);
-				}*/
+				/*
+				 * if (code.defaultRating < code.minRating || code.defaultRating >
+				 * code.maxRating || code.maxRating < code.minRating) {
+				 * handleUserCodesError(file, "Invalid range for global code: " + code.name +
+				 * ", minRating: " + code.minRating + ", maxRating: " + code.maxRating +
+				 * ", defaultRating: " + code.defaultRating); }
+				 */
 
 				if (!GlobalCode.addCode(code))
 					handleUserCodesError(file, "Failed to add global code.");
@@ -2427,8 +2417,7 @@ public class MainController {
 	}
 
 	/************************************************************
-	 * Update utterance displays (e.g. current, last, etc) in active template
-	 * view
+	 * Update utterance displays (e.g. current, last, etc) in active template view
 	 */
 	private synchronized void updateUtteranceDisplays() {
 		// display full string of previous utterance
@@ -2437,13 +2426,13 @@ public class MainController {
 	}
 
 	/*************************************************************
-	 * Parse user controls from XML file to create GUI buttons in app Legacy
-	 * config file had separate section <codeControls> that define which code
-	 * label goes to which button in the screen
+	 * Parse user controls from XML file to create GUI buttons in app Legacy config
+	 * file had separate section <codeControls> that define which code label goes to
+	 * which button in the screen
 	 *
-	 * This function checks each code against MiscCode or GlobalCode vectors
-	 * (that is where the code value is) and then adds the button to the screen
-	 * in the column and row.
+	 * This function checks each code against MiscCode or GlobalCode vectors (that
+	 * is where the code value is) and then adds the button to the screen in the
+	 * column and row.
 	 *
 	 * <userConfiguration> <codeControls panel="left" label="Therapist"> button
 	 *
@@ -2637,14 +2626,12 @@ public class MainController {
 	}
 
 	/*******************************************************************
-	 * Parse a column of controls from given XML node. Add buttons to given
-	 * panel, and set panel layout. Each child of given node is expected to be
-	 * one row of controls.
+	 * Parse a column of controls from given XML node. Add buttons to given panel,
+	 * and set panel layout. Each child of given node is expected to be one row of
+	 * controls.
 	 * 
-	 * @param node
-	 *            xml node
-	 * @param panel
-	 *            parent fxml node
+	 * @param node  xml node
+	 * @param panel parent fxml node
 	 *******************************************************************/
 	private void parseControlColumn(org.w3c.dom.Node node, GridPane panel) {
 
@@ -2962,8 +2949,7 @@ public class MainController {
 	}
 
 	/**
-	 * Meant to provide support for command line and open files events in the
-	 * future
+	 * Meant to provide support for command line and open files events in the future
 	 * 
 	 * @param appParams
 	 */
@@ -2997,16 +2983,20 @@ public class MainController {
 			}
 		}
 	}
-	
+
 	public void mniModeParent() {
-		System.out.println("MniParent was called");
+		setSpeaker(MiscCode.Speaker.Parent);
 	}
-	
+
 	public void mniModeTeen() {
-		System.out.println("MniMode was called");
+		setSpeaker(MiscCode.Speaker.Teen);
+	}
+
+	public void mniModeTherapist() {
+		setSpeaker(MiscCode.Speaker.Therapist);
 	}
 	
-	public void mniModeTherapist() {
-		System.out.println("MniTherapist was called");
+	private void setSpeaker(MiscCode.Speaker speaker) {
+		speakerState = speaker;
 	}
 }
