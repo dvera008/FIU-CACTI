@@ -499,6 +499,9 @@ public class TimeLine extends Group {
 
 
             if( getSelectedMarker() != null) {
+            	if(getSelectedMarker().speaker != MainController.getSpeakerState()) {
+            		mniRemoveMarker.setDisable(true);
+            	}
                 contextMenu.getItems().addAll(mniRemoveMarker);
                 contextMenu.getItems().addAll(mniAnnotateUtterance);
                 contextMenu.getStyleClass().add("contextMenu");

@@ -243,7 +243,7 @@ public class MainController {
 
 	private GuiState guiState;
 
-	private MiscCode.Speaker speakerState;
+	private static MiscCode.Speaker speakerState;
 
 	private TimeLine timeLine;
 
@@ -3007,5 +3007,9 @@ public class MainController {
 				panes[i].setDisable(false);
 			}
 		}
+	}
+	
+	public static Speaker getSpeakerState() {
+		return speakerState;
 	}
 }
