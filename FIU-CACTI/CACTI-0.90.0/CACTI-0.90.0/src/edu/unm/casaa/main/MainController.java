@@ -2258,6 +2258,7 @@ public class MainController {
 	}
 
 	private void handleUserCodesGenericException(File file, Exception e) {
+		e.printStackTrace();
 		showFatalWarning("Failed to load user codes",
 				"Unknown error parsing file: " + file.getAbsolutePath() + "\n" + e.toString());
 	}
