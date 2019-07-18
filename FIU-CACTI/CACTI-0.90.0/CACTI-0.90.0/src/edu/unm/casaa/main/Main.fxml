@@ -50,6 +50,7 @@
         </Menu>
         <Menu text="%menu.title.speakermode">
 		  <items>
+            <MenuItem fx:id="mniModeAll" mnemonicParsing="false" onAction="#mniModeAll" text="%menu.title.speakermode.all" />
             <MenuItem fx:id="mniModeParent" mnemonicParsing="false" onAction="#mniModeParent" text="%menu.title.speakermode.parent" />
             <MenuItem fx:id="mniModeTeen" mnemonicParsing="false" onAction="#mniModeTeen" text="%menu.title.speakermode.teen" />
             <MenuItem fx:id="mniModeTherapist" mnemonicParsing="false" onAction="#mniModeTherapist" text="%menu.title.speakermode.therapist" />

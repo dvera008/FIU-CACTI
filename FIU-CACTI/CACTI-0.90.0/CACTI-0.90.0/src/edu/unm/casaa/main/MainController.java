@@ -243,7 +243,7 @@ public class MainController {
 
 	private GuiState guiState;
 
-	private MiscCode.Speaker speakerState;
+	private static MiscCode.Speaker speakerState;
 
 	private TimeLine timeLine;
 
@@ -2985,6 +2985,10 @@ public class MainController {
 		}
 	}
 
+	public void mniModeAll() {
+		setSpeaker(null);
+	}
+
 	public void mniModeParent() {
 		setSpeaker(MiscCode.Speaker.Parent);
 	}
@@ -3001,11 +3005,15 @@ public class MainController {
 		speakerState = speaker;
 		GridPane[] panes = { pnlCodesLeft, pnlCodesCenter, pnlCodesRight };
 		for (int i = 0; i < panes.length; i++) {
-			if(i != speaker.getID()) {
+			if (speakerState != null && i != speakerState.getID()) {
 				panes[i].setDisable(true);
-			}else {
+			} else {
 				panes[i].setDisable(false);
 			}
 		}
+	}
+
+	public static Speaker getSpeakerState() {
+		return speakerState;
 	}
 }
