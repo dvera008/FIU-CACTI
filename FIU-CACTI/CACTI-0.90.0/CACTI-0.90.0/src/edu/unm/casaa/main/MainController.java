@@ -2389,7 +2389,6 @@ public class MainController {
 				NamedNodeMap map = n.getAttributes();
 				org.w3c.dom.Node nodeValue = map.getNamedItem("value");
 				int value = Integer.parseInt(nodeValue.getTextContent());
-				System.out.println(map.getNamedItem("defaultRating"));
 				org.w3c.dom.Node nodeDefaultRating = map.getNamedItem("defaultRating");
 				org.w3c.dom.Node nodeMinRating = map.getNamedItem("minRating");
 				org.w3c.dom.Node nodeMaxRating = map.getNamedItem("maxRating");
