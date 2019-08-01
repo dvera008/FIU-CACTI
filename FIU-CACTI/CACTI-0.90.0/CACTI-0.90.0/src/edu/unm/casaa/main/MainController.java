@@ -2495,6 +2495,8 @@ public class MainController {
 						}
 					}
 
+					disableNonSpeakerMisc();
+
 					break;
 
 				case GLOBAL_CODING:
@@ -2588,6 +2590,8 @@ public class MainController {
 							}
 
 						}
+
+						disableNonSpeakerGlobals();
 
 					}
 
@@ -3003,17 +3007,37 @@ public class MainController {
 
 	private void setSpeaker(MiscCode.Speaker speaker) {
 		speakerState = speaker;
-		GridPane[] panes = { pnlCodesLeft, pnlCodesCenter, pnlCodesRight };
-		for (int i = 0; i < panes.length; i++) {
-			if (speakerState != null && i != speakerState.getID()) {
-				panes[i].setDisable(true);
-			} else {
-				panes[i].setDisable(false);
-			}
-		}
+		disableNonSpeakerGlobals();
+		disableNonSpeakerMisc();
+
 	}
 
 	public static Speaker getSpeakerState() {
 		return speakerState;
+	}
+
+	public void disableNonSpeakerMisc() {
+		GridPane[] panes = { pnlCodesLeft, pnlCodesCenter, pnlCodesRight };
+		for (int i = 0; i < panes.length; i++) {
+			if (panes[i] != null) {
+				if (speakerState != null && i != speakerState.getID()) {
+					panes[i].setDisable(true);
+				} else {
+					panes[i].setDisable(false);
+				}
+			}
+		}
+	}
+
+	public void disableNonSpeakerGlobals() {
+		if (gpGlobalControls != null) {
+			for (Node node : gpGlobalControls.getChildren()) {
+				if (speakerState != null && GridPane.getColumnIndex(node) != speakerState.getID()) {
+					node.setDisable(true);
+				} else {
+					node.setDisable(false);
+				}
+			}
+		}
 	}
 }
