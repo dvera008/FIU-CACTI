@@ -29,13 +29,13 @@
 <code name="NEUTRAL (TEEN)" value="32"/>
 <code name="CONTRIBUTE" value="33"/>
 <code name="CONFRONT" value="34"/>
-<code name="CHANGE TALK" value="35"/>
-<code name="SUSTAIN TALK" value="36"/>
+<code name="CT (TEEN)" value="35"/>
+<code name="ST (TEEN)" value="36"/>
 </codes>
 
 <codeControls panel="center" label="Teen"><!-- Teen button layout -->
 <row><button code="NO CODE (TEEN)"/><button code="NEUTRAL (TEEN)"/><button code="CONTRIBUTE"/></row>
-<row><button code="CONFRONT"/><button code="CHANGE TALK"/><button code="SUSTAIN TALK"/></row>
+<row><button code="CONFRONT"/><button code="CT (TEEN)"/><button code="ST (TEEN)"/></row>
 </codeControls>
 
 <codes><!-- Therapist codes -->
