@@ -94,6 +94,8 @@ public class SessionData {
 		} catch (SQLException e) {
 			// constructor can fail for basic IO or SQL
 			// convert SQLException as we don't need the SQL details here
+			System.out.println("Exception at sessiondata initialization:");
+			e.printStackTrace();
 			throw new IOException(e);
 		}
 	}
@@ -765,6 +767,20 @@ public class SessionData {
 			ps.setString(3, time_marker);
 			ps.setString(4, annotation);
 			ps.executeUpdate();
+		} catch (SQLException sqlex) {
+			// if there was no associated code, update codes and retry
+			if (sqlex.getMessage().equals("[SQLITE_CONSTRAINT_FOREIGNKEY]  A foreign key constraint failed (FOREIGN KEY constraint failed)"))
+				try (Connection connection = ds.getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+					updateDBConfig(connection);
+					ps.setString(1, utterance_id);
+					ps.setInt(2, code_id);
+					ps.setString(3, time_marker);
+					ps.setString(4, annotation);
+					ps.executeUpdate();
+				}
+			else {
+				throw sqlex;
+			}
 		}
 	}
 
@@ -875,44 +891,14 @@ public class SessionData {
 			statement.executeUpdate(
 					"insert into attributes ( name, value ) values ('" + SessionAttributes.GLOBAL_NOTES + "', '')");
 
-			/*
-			 * Populate speakers table
-			 */
-			connection.setAutoCommit(false);
-			PreparedStatement ps = connection
-					.prepareStatement("insert into speakers (speaker_id, speaker_name) values (?,?)");
-			for (MiscCode.Speaker speaker : MiscCode.Speaker.values()) {
-				ps.setInt(1, speaker.ordinal());
-				ps.setString(2, speaker.name());
-				ps.addBatch();
-			}
-			ps.executeBatch();
-			// apply changes
-			connection.commit();
 
-			/*
-			 * Populate MiscCode table add codes from user environment
-			 */
-			connection.setAutoCommit(false);
-			ps = connection.prepareStatement("insert into codes (code_id, code_name, speaker_id) values (?,?,?)");
-			ListIterator<MiscCode> miscCodeListIterator = MiscCode.getIterator();
-			while (miscCodeListIterator.hasNext()) {
-				MiscCode code = miscCodeListIterator.next();
-				ps.setInt(1, code.value);
-				ps.setString(2, code.name);
-				ps.setInt(3, code.getSpeaker().ordinal());
-				ps.addBatch();
-			}
-			//
-			ps.executeBatch();
-			// apply changes
-			connection.commit();
+			updateDBConfig(connection);
 
 			/*
 			 * Populate Global Ratings table add codes from user environment
 			 */
 			connection.setAutoCommit(false);
-			ps = connection
+			PreparedStatement ps = connection
 					.prepareStatement("insert into ratings (rating_id, rating_name, response_value) values (?,?,?)");
 			ListIterator<GlobalCode> globalCodeListIterator = GlobalCode.getIterator();
 			while (globalCodeListIterator.hasNext()) {
@@ -928,6 +914,47 @@ public class SessionData {
 			connection.commit();
 
 		}
+	}
+
+	// extract functionality for reuse
+	public void updateDBConfig(Connection connection) throws SQLException {
+
+		/*
+		 * Populate speakers table
+		 *///TODO come back here
+		connection.setAutoCommit(false);
+		PreparedStatement ps = connection
+				.prepareStatement("insert or replace into speakers (speaker_id, speaker_name) values (?,?)");
+		for (MiscCode.Speaker speaker : MiscCode.Speaker.values()) {
+			ps.setInt(1, speaker.getID());
+			ps.setString(2, speaker.name());
+			ps.addBatch();
+		}
+		ps.executeBatch();
+		// apply changes
+		connection.commit();
+		
+		/*
+		 * Populate MiscCode table add codes from user environment
+		 */
+		connection.setAutoCommit(false);
+//		ps = connection.prepareStatement("insert into codes (code_id, code_name, speaker_id) values (?,?,?) on conflict do update set code_name = ?, speaker_id = ? where code_id = ?");
+		ps = connection.prepareStatement("insert into codes (code_id, code_name, speaker_id) values (?,?,?)");
+		ListIterator<MiscCode> miscCodeListIterator = MiscCode.getIterator();
+		while (miscCodeListIterator.hasNext()) {
+			MiscCode code = miscCodeListIterator.next();
+			ps.setInt(1, code.value);
+			ps.setString(2, code.name);
+			ps.setInt(3, code.getSpeaker().getID());
+//			ps.setString(4, code.name);
+//			ps.setInt(5, code.getSpeaker().getID());
+//			ps.setInt(6, code.value);
+			ps.addBatch();
+		}
+		//
+		ps.executeBatch();
+		// apply changes
+		connection.commit();
 	}
 
 	public boolean sessionFileExists() {
