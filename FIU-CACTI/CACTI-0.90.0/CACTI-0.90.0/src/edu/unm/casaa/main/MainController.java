@@ -2157,9 +2157,10 @@ public class MainController {
 
 		} catch (SQLException e) {
 			// showError("Error writing casaa file", e.getMessage());
-			System.out.println("line 2055");
-			System.out.println(e.getMessage());
-			System.out.println(e.getSQLState());
+			System.out.println("Failed to insert utterance");
+			System.out.println("Error: \""+e.getMessage()+'"');
+			System.out.println("State: \""+e.getSQLState()+'"');
+			e.printStackTrace();
 		}
 	}
 
