@@ -74,10 +74,8 @@ public class SessionData {
 	/**
 	 * Initialize new session data
 	 * 
-	 * @param storageFile
-	 *            session data file
-	 * @param audioFile
-	 *            session audio file
+	 * @param storageFile session data file
+	 * @param audioFile   session audio file
 	 * @throws IOException
 	 */
 	public SessionData(File storageFile, File audioFile) throws IOException {
@@ -103,8 +101,7 @@ public class SessionData {
 	/**
 	 * Initialize with existing session file
 	 * 
-	 * @param storageFile
-	 *            session data file
+	 * @param storageFile session data file
 	 * @throws IOException
 	 */
 	public SessionData(File storageFile) throws IOException {
@@ -381,8 +378,8 @@ public class SessionData {
 
 		// sum(CR+,CR-,CR0,CR+/-)
 		mapCodeSummary.put("SUM_CR",
-				mapCodeCount.entrySet()
-						.stream().filter(e -> e.getKey().equals("CR+") || e.getKey().equals("CR-")
+				mapCodeCount
+						.entrySet().stream().filter(e -> e.getKey().equals("CR+") || e.getKey().equals("CR-")
 								|| e.getKey().equals("CR0") || e.getKey().equals("CR+/-"))
 						.mapToDouble(e -> e.getValue()).sum());
 
@@ -395,8 +392,8 @@ public class SessionData {
 
 		// sum(SR+,SR-,SR0,SR+/-)
 		mapCodeSummary.put("SUM_SIMPLE",
-				mapCodeCount.entrySet()
-						.stream().filter(e -> e.getKey().equals("SR+") || e.getKey().equals("SR-")
+				mapCodeCount
+						.entrySet().stream().filter(e -> e.getKey().equals("SR+") || e.getKey().equals("SR-")
 								|| e.getKey().equals("SR0") || e.getKey().equals("SR+/-"))
 						.mapToDouble(e -> e.getValue()).sum());
 
@@ -528,8 +525,7 @@ public class SessionData {
 	/**
 	 * Reset utterance list to contents of list
 	 * 
-	 * @param utteranceList
-	 *            List of utterances to load
+	 * @param utteranceList List of utterances to load
 	 * @throws SQLException
 	 */
 	public void setUtteranceList(List<Utterance> utteranceList) throws SQLException {
@@ -566,10 +562,8 @@ public class SessionData {
 	}
 
 	/**
-	 * @param attribute
-	 *            SessionAttribute to update
-	 * @param value
-	 *            new value
+	 * @param attribute SessionAttribute to update
+	 * @param value     new value
 	 * @throws SQLException
 	 */
 	private void setAttribute(SessionAttributes attribute, String value) throws SQLException {
@@ -592,8 +586,7 @@ public class SessionData {
 	}
 
 	/**
-	 * @param filePath
-	 *            new audio file path
+	 * @param filePath new audio file path
 	 */
 	public void setAudioFilePath(String filePath) throws SQLException {
 		this.audioFilePath = filePath;
@@ -612,8 +605,7 @@ public class SessionData {
 	}
 
 	/**
-	 * @param sessionAttribute
-	 *            SessionAttribute to get
+	 * @param sessionAttribute SessionAttribute to get
 	 * @return current value for session attribute
 	 * @throws SQLException
 	 */
@@ -725,16 +717,14 @@ public class SessionData {
 			/*
 			 * Provides an accounting of utterances for debugging
 			 * 
-			 * System.out.println("--- Remaining Utterances:"); ResultSet rs =
-			 * statement.
+			 * System.out.println("--- Remaining Utterances:"); ResultSet rs = statement.
 			 * executeQuery("select utterances.*, codes.code_name, codes.speaker_id from utterances inner join codes on utterances.code_id = codes.code_id order by utterances.time_marker"
 			 * );
 			 * 
-			 * while (rs.next()) { String utt_id = rs.getString("utterance_id");
-			 * String startTime = rs.getString("time_marker"); String codeName =
-			 * rs.getString("code_name");
-			 * System.out.println(String.format("%s - %s - %s", utt_id,
-			 * startTime, codeName)); }
+			 * while (rs.next()) { String utt_id = rs.getString("utterance_id"); String
+			 * startTime = rs.getString("time_marker"); String codeName =
+			 * rs.getString("code_name"); System.out.println(String.format("%s - %s - %s",
+			 * utt_id, startTime, codeName)); }
 			 */
 
 		}
@@ -769,8 +759,10 @@ public class SessionData {
 			ps.executeUpdate();
 		} catch (SQLException sqlex) {
 			// if there was no associated code, update codes and retry
-			if (sqlex.getMessage().equals("[SQLITE_CONSTRAINT_FOREIGNKEY]  A foreign key constraint failed (FOREIGN KEY constraint failed)"))
-				try (Connection connection = ds.getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+			if (sqlex.getMessage().equals(
+					"[SQLITE_CONSTRAINT_FOREIGNKEY]  A foreign key constraint failed (FOREIGN KEY constraint failed)"))
+				try (Connection connection = ds.getConnection();
+						PreparedStatement ps = connection.prepareStatement(sql)) {
 					updateDBConfig(connection);
 					ps.setString(1, utterance_id);
 					ps.setInt(2, code_id);
@@ -872,8 +864,8 @@ public class SessionData {
 					+ "code_name string not null unique, " + "speaker_id integer, "
 					+ "  foreign key (speaker_id) references speakers (speaker_id)" + ")");
 			/*
-			 * utterance_id needs to be 'TEXT' to preserve leading zeros used as
-			 * id in node graph
+			 * utterance_id needs to be 'TEXT' to preserve leading zeros used as id in node
+			 * graph
 			 */
 			statement.executeUpdate(
 					"create table if not exists utterances ( " + "utterance_id TEXT primary key not null unique, "
@@ -890,7 +882,6 @@ public class SessionData {
 					+ SessionAttributes.AUDIO_FILE_PATH + "', '" + this.audioFilePath + "')");
 			statement.executeUpdate(
 					"insert into attributes ( name, value ) values ('" + SessionAttributes.GLOBAL_NOTES + "', '')");
-
 
 			updateDBConfig(connection);
 
@@ -917,44 +908,65 @@ public class SessionData {
 	}
 
 	// extract functionality for reuse
+	// updates (overwrites) database configuration with current userconfig whenever a conflict is found
 	public void updateDBConfig(Connection connection) throws SQLException {
+
+		boolean debug = true;
 
 		/*
 		 * Populate speakers table
-		 *///TODO come back here
+		 */// TODO come back here
 		connection.setAutoCommit(false);
-		PreparedStatement ps = connection
-				.prepareStatement("insert or replace into speakers (speaker_id, speaker_name) values (?,?)");
+		String stmtStr = "insert or replace into speakers (speaker_id, speaker_name) values (?,?)";
+		PreparedStatement ps = connection.prepareStatement(stmtStr);
 		for (MiscCode.Speaker speaker : MiscCode.Speaker.values()) {
 			ps.setInt(1, speaker.getID());
 			ps.setString(2, speaker.name());
+			if (debug)
+				System.out.println(
+						"Adding statement: " + renderStatementString(stmtStr, speaker.getID(), speaker.name()));
 			ps.addBatch();
+			// ps.execute();
 		}
 		ps.executeBatch();
 		// apply changes
 		connection.commit();
-		
+
 		/*
 		 * Populate MiscCode table add codes from user environment
 		 */
 		connection.setAutoCommit(false);
-//		ps = connection.prepareStatement("insert into codes (code_id, code_name, speaker_id) values (?,?,?) on conflict do update set code_name = ?, speaker_id = ? where code_id = ?");
-		ps = connection.prepareStatement("insert into codes (code_id, code_name, speaker_id) values (?,?,?)");
+		stmtStr = "insert or replace into codes (code_id, code_name, speaker_id) values (?,?,?)";
+		ps = connection.prepareStatement(stmtStr);
 		ListIterator<MiscCode> miscCodeListIterator = MiscCode.getIterator();
 		while (miscCodeListIterator.hasNext()) {
 			MiscCode code = miscCodeListIterator.next();
 			ps.setInt(1, code.value);
 			ps.setString(2, code.name);
 			ps.setInt(3, code.getSpeaker().getID());
-//			ps.setString(4, code.name);
-//			ps.setInt(5, code.getSpeaker().getID());
-//			ps.setInt(6, code.value);
+			if (debug)
+				System.out.println("Adding statement: "
+						+ renderStatementString(stmtStr, code.value, code.name, code.getSpeaker().getID()));
+
 			ps.addBatch();
 		}
 		//
 		ps.executeBatch();
 		// apply changes
 		connection.commit();
+	}
+
+	private String renderStatementString(String stmt, Object... params) {
+		int prev = -1;
+		int index = 0;
+		String out = "";
+		for (int i = 0; index != -1 && i < params.length; i++) {
+			index = stmt.indexOf('?', prev + 1);
+			out += stmt.substring(prev + 1, index);
+			out += params[i].toString();
+			prev = index;
+		}
+		return out + stmt.substring(prev + 1);
 	}
 
 	public boolean sessionFileExists() {
@@ -1200,17 +1212,16 @@ public class SessionData {
 	}
 
 	/**
-	 * Grouping of static methods that support backwards compatibility in
-	 * session data storage and could be removed in the future. Might just be
-	 * moved into SessionData
+	 * Grouping of static methods that support backwards compatibility in session
+	 * data storage and could be removed in the future. Might just be moved into
+	 * SessionData
 	 */
 	public static class Compatibility {
 
 		/**
 		 * Separate function for reading audio filename from code file
 		 * 
-		 * @param casaaFileTextFormat
-		 *            casaa file
+		 * @param casaaFileTextFormat casaa file
 		 * @return filenameAudio
 		 */
 		public static String getAudioFilename(File casaaFileTextFormat) throws IOException {
@@ -1244,14 +1255,13 @@ public class SessionData {
 		static public SessionData sessionDataFromPreviousFileFormat(File sessionFileTextFormat) throws IOException {
 
 			/*
-			 * move old format casaa file to same name with "*.casaa.bak" or
-			 * "*.casaa.txt"
+			 * move old format casaa file to same name with "*.casaa.bak" or "*.casaa.txt"
 			 */
 			String backupFilePath = sessionFileTextFormat.getAbsolutePath().replace("casaa", "casaa.txt.bak");
 			File backupSessionFile = new File(backupFilePath);
 			/*
-			 * if a backup file by that name already exists we will assume it
-			 * doesn't need repeating
+			 * if a backup file by that name already exists we will assume it doesn't need
+			 * repeating
 			 */
 			if (!backupSessionFile.exists()) {
 				Files.copy(sessionFileTextFormat.toPath(), backupSessionFile.toPath());
