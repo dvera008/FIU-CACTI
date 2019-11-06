@@ -915,10 +915,28 @@ public class SessionData {
 
 		/*
 		 * Populate speakers table
-		 */// TODO come back here
+		 */
+		
+		// this adds a space to each speaker that we will replace, so that there is no uniqueness constraint violation
 		connection.setAutoCommit(false);
-		String stmtStr = "insert or replace into speakers (speaker_id, speaker_name) values (?,?)";
+		String stmtStr = "update speakers set speaker_name = (speaker_name || ' ') where speaker_name = ?";
 		PreparedStatement ps = connection.prepareStatement(stmtStr);
+		for (MiscCode.Speaker speaker : MiscCode.Speaker.values()) {
+			ps.setString(1, speaker.name());
+			if (debug)
+				System.out.println(
+						"Adding statement: " + renderStatementString(stmtStr, speaker.name()));
+			ps.addBatch();
+			// ps.execute();
+		}
+		ps.executeBatch();
+		
+		// apply changes
+		connection.commit();
+		
+		connection.setAutoCommit(false);
+		stmtStr = "insert or replace into speakers (speaker_id, speaker_name) values (?,?)";
+		ps = connection.prepareStatement(stmtStr);
 		for (MiscCode.Speaker speaker : MiscCode.Speaker.values()) {
 			ps.setInt(1, speaker.getID());
 			ps.setString(2, speaker.name());
