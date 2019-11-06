@@ -2155,12 +2155,16 @@ public class MainController {
 			if (annotate)
 				timeLine.setAnnotateMarker(addedUtteranceId);
 
-		} catch (SQLException e) {
-			// showError("Error writing casaa file", e.getMessage());
-			System.out.println("Failed to insert utterance");
-			System.out.println("Error: \""+e.getMessage()+'"');
-			System.out.println("State: \""+e.getSQLState()+'"');
-			e.printStackTrace();
+		} catch (SQLException ex) {
+			SQLException e = ex;
+			do {
+				// showError("Error writing casaa file", e.getMessage());
+				System.out.println("Failed to insert utterance");
+				System.out.println("Error: \"" + e.getMessage() + '"');
+				System.out.println("State: \"" + e.getSQLState() + '"');
+				e.printStackTrace();
+				e = e.getNextException();
+			} while (e != null);
 		}
 	}
 
