@@ -764,11 +764,8 @@ public class SessionData {
 				try (Connection connection = ds.getConnection();
 						PreparedStatement ps = connection.prepareStatement(sql)) {
 					updateDBConfig(connection);
-					ps.setString(1, utterance_id);
-					ps.setInt(2, code_id);
-					ps.setString(3, time_marker);
-					ps.setString(4, annotation);
-					ps.executeUpdate();
+					//try again once updated
+					addUtterance(utterance_id, code_id, time_marker, annotation);
 				}
 			else {
 				throw sqlex;
@@ -911,7 +908,7 @@ public class SessionData {
 	// updates (overwrites) database configuration with current userconfig whenever a conflict is found
 	public void updateDBConfig(Connection connection) throws SQLException {
 
-		boolean debug = true;
+		boolean debug = false;
 
 		/*
 		 * Populate speakers table
